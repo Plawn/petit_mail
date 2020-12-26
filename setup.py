@@ -5,7 +5,7 @@ with open('README.md', 'r') as f :
 
 setup(
     name='petit_mail',
-    version='0.1.4',
+    version='0.1.5',
     description='An easy way to send templated emails using an HTTP interface',
     packages=find_packages(),
     url='https://github.com/Plawn/petit_mail',
