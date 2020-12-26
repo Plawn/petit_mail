@@ -131,9 +131,18 @@ creds:
     server_port: <>
 ```
 
-## How to get your tokens ?
+### How to get your tokens ?
 
 - Activate your Gmail API keys in the Gmail console
 - Get the `credentials.json` from the Gmail console
 - use the `make_token.py` script from the `google_token_utils` folder
 
+## How to add a custom TemplateDB provider ?
+
+Inherit the `TemplateDB` class and overide the `init` function and the `get_creds_form`function
+
+Then before calling make_server you can use the add_template_db_engine and add the class under the name you like, it will then be bound automatically
+
+## How to add a custom EmailSender ?
+
+Inherit the `EmailSender` class and overide `get_creds_form` function and the `send_html_mail` ,`send_raw_mail` functions.
