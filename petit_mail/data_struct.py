@@ -1,7 +1,7 @@
 from typing import Dict
 
-from .engine import EmailSender
-from .engine.template_db.interface import TemplateDB
+from .senders import EmailSender
+from .template_db.interface import TemplateDB
 
 
 

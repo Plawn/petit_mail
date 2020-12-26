@@ -4,10 +4,10 @@ from typing import Dict, Type
 import yaml
 
 from .data_struct import Context
-from .engine import EmailSender
-from .engine import engines as mail_engines
-from .engine.template_db import engines as template_db_engines
-from .engine.template_db.interface import TemplateDB
+from .senders import EmailSender
+from .senders import engines as mail_engines
+from .template_db import engines as template_db_engines
+from .template_db.interface import TemplateDB
 
 
 def load_mail_senders(creds: dict) -> Dict[str, Type[EmailSender]]:

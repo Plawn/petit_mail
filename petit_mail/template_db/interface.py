@@ -5,7 +5,7 @@ from typing import Any, Dict, Generic, List, Optional, Tuple, TypeVar, final
 import premailer
 from jinja2 import Environment, FunctionLoader, select_autoescape
 
-from ...render_functions import RenderFunctions
+from ..render_functions import RenderFunctions
 from .utils import find_between
 
 
