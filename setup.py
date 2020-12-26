@@ -1,13 +1,13 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
-with open('readme.md', 'r') as f :
+with open('README.md', 'r') as f :
     readme_content = f.read()
 
 setup(
     name='petit_mail',
-    version='0.1.3',
+    version='0.1.4',
     description='An easy way to send templated emails using an HTTP interface',
-    packages=['petit_mail'],
+    packages=find_packages(),
     url='https://github.com/Plawn/petit_mail',
     license='apache-2.0',
     author='Plawn',
