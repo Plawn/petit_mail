@@ -1,9 +1,10 @@
-from petit_mail.data_struct import Context
 from typing import Any, Callable, Dict, List, Literal, Optional
 
 from fastapi import FastAPI
 from pydantic import BaseModel
 from starlette.responses import JSONResponse, Response
+
+from .data_struct import Context
 
 
 class SendMailBody(BaseModel):
