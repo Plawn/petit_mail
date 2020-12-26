@@ -1,0 +1,26 @@
+creds:
+  # creds to use phoenix@juniorisep.com
+  phoenix:
+    type: gmail
+    email: <>
+    refresh_token: <>
+    client_id: <>
+    client_secret: <>
+  # creds to use info@juniorisep.com
+  info:
+    type: gmail
+    email: <>
+    refresh_token: <>
+    client_id: <>
+    client_secret: <>
+
+templates:
+  # minio doesn't support the last options
+  s3:
+    host: <>
+    pass_key: <>
+    access_key: <>
+    bucket_name: <>
+
+  local:
+    folder: templates

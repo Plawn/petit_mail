@@ -1,0 +1,8 @@
+*__pycache__
+.vscode
+.DS_Store
+credentials.json
+conf.yaml
+test
+lostpass_linker.py
+phoenix_mail.py

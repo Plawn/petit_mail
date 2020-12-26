@@ -1,0 +1,20 @@
+<subject>
+    Docker | Backup Failed
+</subject>
+
+
+<mail_content>
+
+    <body>
+        {% from "common/centered_button.html" import centered_button %} {% from "common/card.html" import card %} {% call card("La sauvegarde a échouée") %}
+
+        <div style="white-space: pre-wrap">
+            The backup failed at {{operation_date}}, if the problem persists, contact an administrator
+        </div>
+        <br /> {{ centered_button("Example Incorporation", "https://example.com") }}
+
+        <br> Sysadmins {% endcall %}
+
+    </body>
+
+</mail_content>

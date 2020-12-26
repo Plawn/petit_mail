@@ -1,0 +1,54 @@
+{% macro card(title) %}
+<style>
+    body {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: #404040;
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 22px;
+        background: #eee;
+        padding-top: 5vh;
+        padding-bottom: 5vh;
+        align-content: center;
+    }
+    
+    .card {
+        background: #FFF;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .15);
+        margin: auto;
+        width: 50em;
+        max-width: 80vw;
+        padding: 1vw;
+        padding-left: 3em;
+        padding-right: 3em;
+        transition: all .2s ease-in-out;
+        border-radius: 2vh;
+    }
+    
+    .card:hover {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+        opacity: 1;
+    }
+    
+    .card-header {
+        text-align: center;
+        padding-bottom: 2vh;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="card">
+            <div class="text">
+                <div class="card-header">
+                    <h1>{{title}}</h1>
+                </div>
+                <div>
+                    <p>
+                        {{ caller() }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}

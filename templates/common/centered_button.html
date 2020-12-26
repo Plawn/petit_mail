@@ -1,0 +1,26 @@
+{% macro centered_button(text, link) %}
+<style>
+    .this_button {
+        text-align: center;
+    }
+
+    .btn {
+        cursor: pointer;
+        margin: 1vh;
+        border-radius: 1vh;
+        text-decoration: none;
+        padding: 1vh;
+        font-size: large;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+    .purple {
+        color: #9b59b6;
+        border: 2px #9b59b6 solid;
+    }
+</style>
+<div class="this_button">
+    <a href="{{link}}" class="btn purple">{{text}}</a>
+</div>
+{% endmacro %}

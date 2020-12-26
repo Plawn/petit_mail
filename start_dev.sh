@@ -1,0 +1,1 @@
+profile=local CONF_FILE=conf.yaml uvicorn phoenix_mail:app --reload --port 5004
