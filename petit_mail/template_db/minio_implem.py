@@ -21,7 +21,8 @@ class MinioTemplateDB(TemplateDB):
         super().__init__(minio_creds, logger=logger)
         self.bucket_name = minio_creds.bucket_name
         self.minio_instance = minio.Minio(
-            minio_creds.host, minio_creds.accesskey, minio_creds.passkey)
+            minio_creds.host, minio_creds.accesskey, minio_creds.passkey
+        )
 
     @staticmethod
     def get_creds_form() -> MinioInfos:

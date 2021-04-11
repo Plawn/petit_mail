@@ -1,5 +1,5 @@
 from typing import Any, Callable, Dict, List, Literal, Optional, Union
-
+import logging
 from fastapi import FastAPI
 from pydantic import BaseModel
 from starlette.responses import JSONResponse, Response
@@ -9,7 +9,7 @@ from .senders.interface import Email
 
 
 class SendMailBody(BaseModel):
-    addresses: Union[List[List[str]]]
+    addresses: List[List[str]]
     content: str = ''
     subject: str = ''
     from_: str
@@ -57,10 +57,11 @@ def make_server(app: FastAPI, on_init: Callable[[Context], None], context: Conte
 
         try:
             sender.send_plain_mail(
-                Email(_from, subject, content, addresses) for addresses in addresses1
+                [Email(_from, subject, content, addresses) for addresses in addresses1]
             )
             return Response(status_code=200)
-        except:
+        except Exception as e:
+            logging.error(e)
             return Response(status_code=500)
 
     @app.post('/send_mail/{sender_name}/html')
@@ -86,7 +87,7 @@ def make_server(app: FastAPI, on_init: Callable[[Context], None], context: Conte
         # log result in db ?
         if send:
             sender.send_html_mail(
-                Email(_from, subject, content, addresses) for addresses in addresses1
+                [Email(_from, subject, content, addresses) for addresses in addresses1]
             )
             return Response(status_code=200)
         else:
@@ -101,5 +102,8 @@ def make_server(app: FastAPI, on_init: Callable[[Context], None], context: Conte
         return {
             k: v.infos() for k, v in senders_db.items()
         }
+    @app.get('/fields')
+    def get_fields(template_name: str):
+        return template_db.get_placeholders(template_name)
 
     return app

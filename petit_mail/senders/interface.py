@@ -15,6 +15,7 @@ class Email:
 
 
 class EmailSender(Generic[T], ABC):
+    email: str
     @abstractclassmethod
     def get_creds_form(self) -> Type[T]:
         ...

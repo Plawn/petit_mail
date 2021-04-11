@@ -25,7 +25,8 @@ class LocalTemplateDB(TemplateDB):
                 with open(full_path, 'r') as f:
                     self.logger.info(f'opening {filename}')
                     self.add_template_from_text(
-                        filename, f.read(), filename.startswith('common'))
+                        filename, f.read(), filename.startswith('common')
+                    )
                     self.logger.info(f'opened {filename}')
             except:
                 self.logger.error(f'failed {full_path}')
