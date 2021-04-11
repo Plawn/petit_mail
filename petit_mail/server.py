@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Literal, Optional
+from typing import Any, Callable, Dict, List, Literal, Optional, Union
 
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -9,7 +9,7 @@ from .senders.interface import Email
 
 
 class SendMailBody(BaseModel):
-    addresses: List[str]
+    addresses: Union[List[List[str]]]
     content: str = ''
     subject: str = ''
     from_: str
@@ -50,14 +50,14 @@ def make_server(app: FastAPI, on_init: Callable[[Context], None], context: Conte
         # getting the requested sender
         sender = senders_db[sender_name]
 
-        addresses = body.addresses
+        addresses1 = body.addresses
         content = body.content
         subject = body.subject
         _from = body.from_
 
         try:
             sender.send_plain_mail(
-                [Email(_from, subject, content, addresses)]
+                Email(_from, subject, content, addresses) for addresses in addresses1
             )
             return Response(status_code=200)
         except:
@@ -68,7 +68,7 @@ def make_server(app: FastAPI, on_init: Callable[[Context], None], context: Conte
         # getting the requested sender
         sender = senders_db[sender_name]
 
-        addresses = body.addresses
+        addresses1 = body.addresses
         content = body.content
         subject = body.subject
         _from = body.from_
@@ -77,18 +77,20 @@ def make_server(app: FastAPI, on_init: Callable[[Context], None], context: Conte
             template_name = make_template_filename(body.template_name)
             if template_name in template_db.templates:
                 subject, content = template_db.render(
-                    template_name, body.data)
+                    template_name, body.data
+                )
             else:
                 # TODO: should be more consistent
                 return JSONResponse({'error': 'template not found'}, 404)
-
+        # async ?
+        # log result in db ?
         if send:
             sender.send_html_mail(
-                [Email(_from, subject, content, addresses)]
+                Email(_from, subject, content, addresses) for addresses in addresses1
             )
             return Response(status_code=200)
         else:
-            return Response(content, 200)
+            return Response(content, status_code=200)
 
     @app.get('/live')
     def live():
