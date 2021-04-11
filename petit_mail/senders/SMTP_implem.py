@@ -4,9 +4,9 @@ import threading
 from dataclasses import dataclass
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import List, Optional
+from typing import List, Optional, Type
 
-from .interface import EmailSender
+from .interface import EmailSender, Email
 
 
 @dataclass
@@ -20,31 +20,32 @@ class SMTPCreds:
 class SMTPMailHandler(EmailSender[SMTPCreds]):
     MAX_RETRIES = 5
 
-    def get_creds_form(self) -> SMTPCreds:
+    def get_creds_form(self) -> Type[SMTPCreds]:
         return SMTPCreds
 
     def __init__(self, creds: SMTPCreds):
+        self.email = creds.email
         self.creds = creds
         self.session: Optional[smtplib.SMTP] = None
         self.lock = threading.RLock()
         self.logged: bool = False
         self.__login()
 
-    def send_html_mail(self, _from: str, subject: str, content: str, adresses: List[str]) -> None:
+    def send_html_mail(self, email: Email) -> None:
         msg = MIMEMultipart('alternative')
-        msg['Subject'] = subject
-        msg['From'] = f"'{_from}' <{self.creds.email}>"
-        msg['To'] = ','.join(adresses)
-        msg.attach(MIMEText(content, 'text'))
-        msg.attach(MIMEText(content, 'html'))
-        self.__send_mail(adresses, msg)
+        msg['Subject'] = email.subject
+        msg['From'] = f"'{email.sender}' <{self.creds.email}>"
+        msg['To'] = ','.join(email.addresses)
+        msg.attach(MIMEText(email.content, 'text'))
+        msg.attach(MIMEText(email.content, 'html'))
+        self.__send_mail(email.addresses, msg)
 
-    def send_raw_mail(self, _from: str, subject: str, content: str, adresses: List[str]) -> None:
-        message = MIMEText(content)
-        message['Subject'] = subject
-        message['From'] = f"'{_from}' <{self.creds.email}>"
-        message['To'] = ','.join(adresses)
-        self.__send_mail(adresses, message)
+    def send_raw_mail(self, email: Email) -> None:
+        message = MIMEText(email.content)
+        message['Subject'] = email.subject
+        message['From'] = f"'{email.sender}' <{self.creds.email}>"
+        message['To'] = ','.join(email.addresses)
+        self.__send_mail(email.addresses, message)
 
     def __login(self):
         # in case multiple people try to re auth the server at the same time

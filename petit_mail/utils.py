@@ -6,25 +6,15 @@ import yaml
 from .data_struct import Context
 from .senders import EmailSender
 from .senders import engines as mail_engines
+from .senders.sender_identity import Identity
 from .template_db import engines as template_db_engines
 from .template_db.interface import TemplateDB
 
 
-def load_mail_senders(creds: dict) -> Dict[str, Type[EmailSender]]:
-    senders_db: Dict[str, Type[EmailSender]] = {}
-
-    for name, infos in creds.items():
-        type_ = infos['type']
-        del infos['type']
-        try:
-            engine = mail_engines[type_]
-            senders_db[name] = engine(engine.get_creds_form()(**infos))
-        except KeyError:
-            logging.error("invalid email type")
-            raise Exception('Invalid mail type')
-        except:
-            raise
-
+def load_mail_senders(creds: dict) -> Dict[str, Identity]:
+    senders_db: Dict[str, Identity] = {
+        name: Identity.load(infos) for name, infos in creds.items()
+    }
     return senders_db
 
 
@@ -34,7 +24,8 @@ def get_template_provider(template_infos: dict, type_: str) -> TemplateDB:
         return engine(engine.get_creds_form()(**template_infos[type_]))
     except KeyError as e:
         raise KeyError(
-            f'Invalid template engine selected, availables are {list(template_db_engines.keys())}, got {type_}')
+            f'Invalid template engine selected, availables are {list(template_db_engines.keys())}, got {type_}'
+        )
     except Exception as e:
         raise e
 
@@ -49,6 +40,7 @@ def load_context(creds_filename: str, template_provider: str) -> Context:
 
     context.senders_db = load_mail_senders(conf['creds'])
     context.template_db = get_template_provider(
-        conf['templates'], template_provider)
+        conf['templates'], template_provider
+    )
 
     return context

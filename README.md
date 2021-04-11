@@ -141,8 +141,10 @@ creds:
 
 Inherit the `TemplateDB` class and overide the `init` function and the `get_creds_form`function
 
-Then before calling make_server you can use the add_template_db_engine and add the class under the name you like, it will then be bound automatically
+Then before calling `make_server` you can use the `add_template_db_engine` and add the class under the name you like, it will then be bound automatically
 
 ## How to add a custom EmailSender ?
 
 Inherit the `EmailSender` class and overide `get_creds_form` function and the `send_html_mail` ,`send_raw_mail` functions.
+
+Then before calling `make_server` you can use the `add_sender_engine` and add the class under the name you like, it will then be bound automatically
