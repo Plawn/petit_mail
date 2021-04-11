@@ -44,3 +44,7 @@ def load_context(creds_filename: str, template_provider: str) -> Context:
     )
 
     return context
+
+
+def make_template_filename(template_name: str):
+    return template_name + '.html'
