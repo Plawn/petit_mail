@@ -1,8 +1,6 @@
-from abc import ABC, abstractmethod
 from typing import Callable, Dict
 
 
-class RenderFunctions(ABC):
-    @abstractmethod
+class RenderFunctions:
     def get_functions() -> Dict[str, Callable[..., str]]:
-        ...
+        return {}

@@ -1,8 +1,7 @@
 import logging
-from typing import Any, Callable, Dict, List, Literal, Optional, Union
+from typing import Any, Callable
 
 from fastapi import FastAPI
-from pydantic import BaseModel
 from starlette.responses import JSONResponse, Response
 
 from .data_struct import Context
@@ -40,10 +39,10 @@ def make_server(app: FastAPI, on_init: Callable[[Context], None], context: Conte
         _from = body.from_
 
         try:
-            sender.send_plain_mail(
-                [Email(_from, subject, content, addresses)
-                 for addresses in addresses1]
-            )
+            sender.send_plain_mail([
+                Email(_from, subject, content, addresses)
+                for addresses in addresses1
+            ])
             return Response(status_code=200)
         except Exception as e:
             logging.error(e)
@@ -59,22 +58,22 @@ def make_server(app: FastAPI, on_init: Callable[[Context], None], context: Conte
         content = None
         subject = None
 
-        if body.template_name is not None:
-            template_name = make_template_filename(body.template_name)
-            if template_name in template_db.templates:
-                subject, content = template_db.render(
-                    template_name, body.data
-                )
-            else:
-                # TODO: should be more consistent
-                return JSONResponse({'error': 'template not found'}, 404)
+        
+        template_name = make_template_filename(body.template_name)
+        if template_name in template_db.templates:
+            subject, content = template_db.render(
+                template_name, body.data
+            )
+        else:
+            # TODO: should be more consistent
+            return JSONResponse({'error': 'template not found'}, 404)
         # async ?
         # log result in db ?
         if send:
-            sender.send_html_mail(
-                [Email(_from, subject, content, addresses)
-                 for addresses in addresses1]
-            )
+            sender.send_html_mail([
+                Email(_from, subject, content, addresses)
+                for addresses in addresses1
+            ])
             return Response(status_code=200)
         else:
             return Response(content, status_code=200)

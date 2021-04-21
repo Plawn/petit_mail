@@ -15,13 +15,16 @@ def find_between(s: str, first: str, last: str):
 
 
 def iterate_over_folder(folder: str):
+    """Walk into every folder and files
+    """
     for dirpath, _, files in os.walk(folder):
         for filename in files:
             yield os.path.join(dirpath, filename)
 
 
 def extract_variable(var: str):
-    # remove the '(' and ')'
+    """Will attempt to get every variable inside the given strings
+    """
     r = var.split('+')
     r = [
         i
@@ -30,18 +33,19 @@ def extract_variable(var: str):
         .strip()
         for i in r if '"' not in i
     ]
-
-    # print(var, r)
     return r
 
 
-def get_placeholder(text: str, local_funcs:List[str]) -> List[str]:
+def get_placeholder(text: str, local_funcs: List[str]) -> List[str]:
     for name in local_funcs:
         text = text.replace(name, '')
     # finding between {{ }}
     res: List[str] = re.findall(
         r"\{{(.*?)\}}", text, re.MULTILINE
     )
+    # res.extend(re.findall(
+    #     r"{%(.*?)%}", text, re.MULTILINE
+    # ))
     # finding between {% %}
     res2 = []
     for i in res:

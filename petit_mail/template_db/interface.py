@@ -23,6 +23,7 @@ T = TypeVar('T')
 
 class TemplateDB(ABC, Generic[T]):
     def __init__(self, infos: Any,  logger: Optional[logging.Logger] = None):
+        self._performed_init = False
         self.templates: Dict[str, TemplateData] = {}
         self.logger = logger or logging.getLogger()
         self.env = Environment(
@@ -30,7 +31,7 @@ class TemplateDB(ABC, Generic[T]):
             autoescape=select_autoescape(['html', 'xml'])
         )
         self.env.auto_reload = True
-        self.render_functions: Dict[str, Callable[..., str]] = None
+        self.render_functions: Dict[str, Callable[..., str]] = {}
 
     @abstractmethod
     def init(self):

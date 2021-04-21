@@ -1,15 +1,33 @@
 import logging
+from petit_mail.senders import persistor
 from petit_mail.senders.persistor import Persistor
 from typing import List, Dict, Type
-
+import threading
+import queue
 from . import engines
 from .interface import Email, EmailSender
+
+# not used as of now
+class SendWorker(threading.Thread):
+    def __init__(self, queue: queue.Queue, persistor: Persistor):
+        self.queue = queue
+        self.persistor = persistor
+
+    def run(self) -> None:
+        while True:
+            mail, sender = self.queue.get()
+            try :
+                sender(mail)
+                self.persistor.confirm_success(sender, mail)
+            except:
+                self.persistor.confirm_fail(sender, mail)
 
 
 class Identity:
     def __init__(self, senders: Dict[str, EmailSender]):
         self.senders: Dict[str, EmailSender] = senders
         self.persistor = Persistor()
+        self.queue = queue.Queue()
 
     def infos(self):
         return {
@@ -22,16 +40,16 @@ class Identity:
         senders = self.get_senders(len(mails))
         send = None
         for nb, sender in senders:
+            if type_ == "html":
+                send = sender.send_html_mail
+            else:
+                send = sender.send_raw_mail
             while nb > 0:
-                if type_ == "html":
-                    send = sender.send_html_mail
-                else:
-                    send = sender.send_raw_mail
                 for mail in mails:
                     try:
                         send(mail)
                         self.persistor.confirm_success(sender, mail)
-                        logging.info('send succeded')
+                        logging.debug('send succeded')
                         # note that send succeeded
                     except:
                         logging.error('send failed')
@@ -39,9 +57,6 @@ class Identity:
                         self.persistor.confirm_fail(sender, mail)
                     finally:
                         nb -= 1
-        
-
-        
 
     def get_senders(self, email_number: int):
         """Should ensure that a given account still has enough clearance to send emails
